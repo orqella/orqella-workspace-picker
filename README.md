@@ -37,7 +37,8 @@ says what it can. Unsupported environments return a clear message instead of a
 broken button. GNOME Wayland and a bare Windows install do not currently expose
 a stable workspace CLI; Windows support requires the third-party
 [PSVirtualDesktop](https://github.com/MScholtes/PSVirtualDesktop) PowerShell
-module.
+module. Orqella must also be running in the logged-in desktop session: a
+session-0 Windows service or SSH-launched daemon cannot access virtual desktops.
 
 The sidecar is intentionally unsandboxed (`sandbox = false`) because it must
 talk to the logged-in graphical session. It only runs `hyprctl`, `swaymsg`,

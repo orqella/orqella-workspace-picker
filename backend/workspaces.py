@@ -901,6 +901,11 @@ def _unsupported_hint() -> str:
 
 class WorkspaceManager:
     def snapshot(self) -> dict[str, Any]:
+        if os.name == "nt" and _windows_session_id() == 0:
+            return _unsupported(
+                "Windows virtual desktops are only available in the logged-in desktop session.",
+                _unsupported_hint(),
+            )
         backend = detect_backend()
         if backend is None:
             return _unsupported("No supported workspace controller was found.", _unsupported_hint())
@@ -912,6 +917,13 @@ class WorkspaceManager:
             return _unsupported(f"Workspace backend failed: {error}", _unsupported_hint())
 
     def activate(self, workspace_id: str) -> dict[str, Any]:
+        if os.name == "nt" and _windows_session_id() == 0:
+            return {
+                "ok": False,
+                "available": False,
+                "error": "Windows virtual desktops are only available in the logged-in desktop session.",
+                "hint": _unsupported_hint(),
+            }
         backend = detect_backend()
         if backend is None:
             return {

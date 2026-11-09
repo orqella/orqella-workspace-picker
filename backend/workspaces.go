@@ -888,16 +888,20 @@ type yabaiWindow struct {
 	Title string `json:"title"`
 }
 
-type yabaiBackend struct{}
+type yabaiBackend struct{ binary string }
 
 func detectYabai() workspaceBackend {
-	if runtime.GOOS != "darwin" || lookPath("yabai") == "" {
+	if runtime.GOOS != "darwin" {
 		return nil
 	}
-	if _, err := runCommand("yabai", []string{"-m", "query", "--spaces"}, childEnv(), 3*time.Second); err != nil {
+	binary := lookPath("yabai")
+	if binary == "" {
 		return nil
 	}
-	return &yabaiBackend{}
+	if _, err := runCommand(binary, []string{"-m", "query", "--spaces"}, childEnv(), 3*time.Second); err != nil {
+		return nil
+	}
+	return &yabaiBackend{binary: binary}
 }
 
 func buildYabai(spaces []yabaiSpace, windows []yabaiWindow) Snapshot {
@@ -934,11 +938,11 @@ func buildYabai(spaces []yabaiSpace, windows []yabaiWindow) Snapshot {
 }
 
 func (backend *yabaiBackend) snapshot() (Snapshot, error) {
-	spaceOutput, err := runCommand("yabai", []string{"-m", "query", "--spaces"}, childEnv(), 3*time.Second)
+	spaceOutput, err := runCommand(backend.binary, []string{"-m", "query", "--spaces"}, childEnv(), 3*time.Second)
 	if err != nil {
 		return Snapshot{}, err
 	}
-	windowOutput, err := runCommand("yabai", []string{"-m", "query", "--windows"}, childEnv(), 3*time.Second)
+	windowOutput, err := runCommand(backend.binary, []string{"-m", "query", "--windows"}, childEnv(), 3*time.Second)
 	if err != nil {
 		return Snapshot{}, err
 	}
@@ -958,20 +962,24 @@ func (backend *yabaiBackend) activate(workspace Workspace) error {
 	if err != nil {
 		return fmt.Errorf("this macOS Space does not have a valid index")
 	}
-	_, err = runCommand("yabai", []string{"-m", "space", "--focus", strconv.Itoa(index)}, childEnv(), 3*time.Second)
+	_, err = runCommand(backend.binary, []string{"-m", "space", "--focus", strconv.Itoa(index)}, childEnv(), 3*time.Second)
 	return err
 }
 
-type aerospaceBackend struct{}
+type aerospaceBackend struct{ binary string }
 
 func detectAeroSpace() workspaceBackend {
-	if runtime.GOOS != "darwin" || lookPath("aerospace") == "" {
+	if runtime.GOOS != "darwin" {
 		return nil
 	}
-	if _, err := runCommand("aerospace", []string{"list-workspaces", "--all"}, childEnv(), 3*time.Second); err != nil {
+	binary := lookPath("aerospace")
+	if binary == "" {
 		return nil
 	}
-	return &aerospaceBackend{}
+	if _, err := runCommand(binary, []string{"list-workspaces", "--all"}, childEnv(), 3*time.Second); err != nil {
+		return nil
+	}
+	return &aerospaceBackend{binary: binary}
 }
 
 func parseAeroSpaceWorkspaces(output string) []struct {
@@ -1045,14 +1053,14 @@ func buildAeroSpace(workspacesText, windowsText string) Snapshot {
 }
 
 func (backend *aerospaceBackend) snapshot() (Snapshot, error) {
-	workspaces, err := runCommand("aerospace", []string{
+	workspaces, err := runCommand(backend.binary, []string{
 		"list-workspaces", "--all", "--format",
 		"%{workspace}\t%{workspace-is-focused}\t%{workspace-is-visible}\t%{monitor-id}\t%{monitor-name}",
 	}, childEnv(), 3*time.Second)
 	if err != nil {
 		return Snapshot{}, err
 	}
-	windows, err := runCommand("aerospace", []string{
+	windows, err := runCommand(backend.binary, []string{
 		"list-windows", "--all", "--format",
 		"%{workspace}\t%{app-name}\t%{window-title}",
 	}, childEnv(), 3*time.Second)
@@ -1066,7 +1074,7 @@ func (backend *aerospaceBackend) activate(workspace Workspace) error {
 	if workspace.Name == "" {
 		return fmt.Errorf("this AeroSpace workspace has no name")
 	}
-	_, err := runCommand("aerospace", []string{"workspace", workspace.Name}, childEnv(), 3*time.Second)
+	_, err := runCommand(backend.binary, []string{"workspace", workspace.Name}, childEnv(), 3*time.Second)
 	return err
 }
 

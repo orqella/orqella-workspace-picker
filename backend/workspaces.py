@@ -61,6 +61,18 @@ def _int_or_none(value: Any) -> int | None:
         return None
 
 
+def _lua_string(value: Any) -> str:
+    text = _safe_text(value)
+    escaped = (
+        text.replace("\\", "\\\\")
+        .replace("\"", "\\\"")
+        .replace("\n", "\\n")
+        .replace("\r", "\\r")
+        .replace("\t", "\\t")
+    )
+    return f'"{escaped}"'
+
+
 def _app_name(identifier: Any, title: Any) -> str:
     ident = _safe_text(identifier, 100).split(".desktop", 1)[0]
     title = _safe_text(title)
@@ -553,12 +565,21 @@ class HyprlandBackend(WorkspaceBackend):
         name = _safe_text(workspace.get("name") or workspace_id)
         if workspace.get("kind") == "special":
             special = name.split(":", 1)[-1] if ":" in name else name
-            command = ["hyprctl", "dispatch", "togglespecialworkspace", special]
+            modern = f"hl.dsp.workspace.toggle_special({_lua_string(special)})"
+            legacy = ["hyprctl", "dispatch", "togglespecialworkspace", special]
         elif workspace_id.lstrip("-").isdigit():
-            command = ["hyprctl", "dispatch", "workspace", workspace_id]
+            modern = f"hl.dsp.focus({{ workspace = {workspace_id} }})"
+            legacy = ["hyprctl", "dispatch", "workspace", workspace_id]
         else:
-            command = ["hyprctl", "dispatch", "workspace", f"name:{name}"]
-        _run(command, env=self.env)
+            modern = f"hl.dsp.focus({{ workspace = {_lua_string(name)} }})"
+            legacy = ["hyprctl", "dispatch", "workspace", f"name:{name}"]
+        try:
+            _run(["hyprctl", "dispatch", modern], env=self.env)
+        except WorkspaceError:
+            # Hyprland before the Lua dispatcher migration used the older
+            # `dispatch workspace` syntax. Try that only after the modern
+            # expression is rejected.
+            _run(legacy, env=self.env)
 
 
 class I3LikeBackend(WorkspaceBackend):

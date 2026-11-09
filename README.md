@@ -13,8 +13,9 @@ information. Click or tap a workspace to switch to it.
 orqella module install https://github.com/orqella/orqella-workspace-picker
 ```
 
-Then enable the card from **Edit** on a dashboard if it is not already visible.
-The module is installed with `overview_default = true`.
+Review and grant the module's **backend** permission in **Settings → Modules**
+on first install, then enable the card from **Edit** on a dashboard if it is not
+already visible. The module is installed with `overview_default = true`.
 
 ## How it works
 

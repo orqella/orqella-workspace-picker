@@ -12,7 +12,7 @@ permissions = ["backend"]
 
 [ui]
 overview_width = 3
-overview_height = 3
+overview_height = 4
 
 [backend]
 kind = "sidecar"

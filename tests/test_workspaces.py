@@ -126,6 +126,11 @@ class OtherBackendTests(unittest.TestCase):
         self.assertTrue(payload["workspaces"][0]["active"])
         self.assertEqual(payload["workspaces"][0]["windows"], 1)
 
+    def test_bundled_windows_helper_is_present(self):
+        self.assertTrue(workspaces.PSVENDOR_MANIFEST.is_file())
+        self.assertTrue((workspaces.PSVENDOR_DIR / "functions.cat").is_file())
+        self.assertTrue((workspaces.PSVENDOR_DIR / "LICENSE").is_file())
+
     def test_zero_identifiers_are_preserved(self):
         self.assertEqual(workspaces._safe_text(0), "0")
         payload = workspaces.build_windows_payload([

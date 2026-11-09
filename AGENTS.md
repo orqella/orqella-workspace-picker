@@ -17,6 +17,9 @@ whole user interface.
   access requirement.
 - Prefer useful workspace metadata where the desktop exposes it. Do not invent
   app names or monitor labels when a backend cannot provide them.
+- `backend/vendor/psvirtualdesktop/` is an unmodified MIT-licensed vendored
+  dependency. Keep its license and files together; do not edit the vendored
+  script.
 - Add parser tests for every new backend under `tests/`.
 - Load `/assets/theme.css` and `/assets/module.css` before `overview.css`; use
   core primitives and theme tokens.

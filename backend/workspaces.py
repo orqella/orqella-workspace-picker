@@ -16,6 +16,9 @@ import sys
 from pathlib import Path
 from typing import Any
 
+PSVENDOR_DIR = Path(__file__).resolve().parent / "vendor" / "psvirtualdesktop"
+PSVENDOR_MANIFEST = PSVENDOR_DIR / "VirtualDesktop.psd1"
+
 
 class WorkspaceError(RuntimeError):
     """A user-facing workspace adapter error."""
@@ -59,6 +62,17 @@ def _int_or_none(value: Any) -> int | None:
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def _powershell_string(value: Any) -> str:
+    return "'" + str(value).replace("'", "''") + "'"
+
+
+def _powershell_import() -> str:
+    return (
+        f"Import-Module {_powershell_string(PSVENDOR_MANIFEST)} "
+        "-Force -WarningAction SilentlyContinue; "
+    )
 
 
 def _lua_string(value: Any) -> str:
@@ -818,11 +832,13 @@ class WindowsBackend(WorkspaceBackend):
             return None
         # Virtual desktops are scoped to the interactive user session. A
         # service or SSH process in session 0 cannot see the desktop's
-        # workspaces, even when PSVirtualDesktop is installed.
+        # workspaces, even with the bundled helper.
         if _windows_session_id() == 0:
             return None
         command = shutil.which("powershell") or shutil.which("pwsh")
         if not command:
+            return None
+        if not PSVENDOR_MANIFEST.is_file():
             return None
         try:
             output = _run([
@@ -832,8 +848,10 @@ class WindowsBackend(WorkspaceBackend):
                 "-ExecutionPolicy",
                 "Bypass",
                 "-Command",
-                "if (Get-Command Get-DesktopCount -ErrorAction SilentlyContinue) { 'yes' }",
-            ], timeout=5)
+                "$ErrorActionPreference = 'SilentlyContinue'; "
+                + _powershell_import()
+                + "if (Get-Command Get-DesktopCount -ErrorAction SilentlyContinue) { 'yes' }",
+            ], timeout=10)
             if "yes" not in output:
                 return None
             return cls(command)
@@ -848,8 +866,8 @@ class WindowsBackend(WorkspaceBackend):
             "-ExecutionPolicy",
             "Bypass",
             "-Command",
-            POWERSHELL_SNAPSHOT,
-        ], timeout=10)
+            _powershell_import() + POWERSHELL_SNAPSHOT,
+        ], timeout=15)
         return build_windows_payload(_json(output, "VirtualDesktop desktops"))
 
     def activate(self, workspace: dict[str, Any]) -> None:
@@ -865,8 +883,8 @@ class WindowsBackend(WorkspaceBackend):
             "-ExecutionPolicy",
             "Bypass",
             "-Command",
-            f"Switch-Desktop -Desktop {value}",
-        ], timeout=10)
+            _powershell_import() + f"Switch-Desktop -Desktop {value}",
+        ], timeout=15)
 
 
 def detect_backend() -> WorkspaceBackend | None:
@@ -887,8 +905,7 @@ def _unsupported_hint() -> str:
         return "Install yabai and enable its scripting addition to expose macOS Spaces."
     if os.name == "nt":
         return (
-            "Install the VirtualDesktop PowerShell module (PSVirtualDesktop), "
-            "and run Orqella in the logged-in desktop session. A session-0 "
+            "Run Orqella in the logged-in desktop session. A session-0 "
             "service or SSH process cannot see Windows virtual desktops."
         )
     if sys.platform.startswith("linux"):

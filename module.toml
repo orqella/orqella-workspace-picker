@@ -1,7 +1,7 @@
 schema = 1
 id = "workspace-picker"
 name = "Workspace picker"
-version = "0.1.0"
+version = "0.1.1"
 api_version = "1"
 description = "See and switch open workspaces on the selected machine."
 overview = "ui/overview.html"

@@ -30,15 +30,18 @@ its native workspace controller:
 | KDE Plasma | KWin D-Bus desktop count/current desktop | `setCurrentDesktop` | No |
 | Other EWMH X11 WMs | `wmctrl -d` / `wmctrl -l -x` | `wmctrl -s` | Yes |
 | macOS + yabai | `yabai query --spaces` / `--windows` | `yabai space --focus` | Yes |
-| Windows + PSVirtualDesktop | `Get-Desktop*` PowerShell module | `Switch-Desktop` | Yes |
+| Windows + bundled VirtualDesktop helper | `Get-Desktop*` PowerShell helper | `Switch-Desktop` | Yes |
 
 Where a desktop only exposes workspace numbers, the card shows the number and
 says what it can. Unsupported environments return a clear message instead of a
-broken button. GNOME Wayland and a bare Windows install do not currently expose
-a stable workspace CLI; Windows support requires the third-party
-[PSVirtualDesktop](https://github.com/MScholtes/PSVirtualDesktop) PowerShell
-module. Orqella must also be running in the logged-in desktop session: a
-session-0 Windows service or SSH-launched daemon cannot access virtual desktops.
+broken button. GNOME Wayland currently has no stable workspace CLI.
+
+Windows uses a bundled, MIT-licensed copy of
+[PSVirtualDesktop](https://github.com/MScholtes/PSVirtualDesktop), so there is no
+separate PowerShell Gallery installation step. Orqella must be running in the
+logged-in desktop session: a session-0 Windows service or SSH-launched daemon
+cannot access virtual desktops. Install/run Orqella with the normal per-user
+Windows startup path (`orqella service install`) on real desktops.
 
 The sidecar is intentionally unsandboxed (`sandbox = false`) because it must
 talk to the logged-in graphical session. It only runs `hyprctl`, `swaymsg`,

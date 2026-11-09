@@ -1,7 +1,7 @@
 schema = 1
 id = "workspace-picker"
 name = "Workspace picker"
-version = "0.2.0"
+version = "0.2.1"
 api_version = "1"
 description = "See and switch open workspaces on the selected machine."
 overview = "ui/overview.html"
@@ -23,30 +23,30 @@ platforms = ["linux", "macos", "windows"]
 
 [[backend.artifacts]]
 platform = "linux-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-linux-x86_64"
+path = "backend/bin/workspace-picker-linux-x86_64"
 sha256 = "6a793f5175c24893e8094843c8706074b597a77d35ffa09a01582c3c3d01915d"
 
 [[backend.artifacts]]
 platform = "linux-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-linux-aarch64"
+path = "backend/bin/workspace-picker-linux-aarch64"
 sha256 = "aa646ee0e7518397ed0e2ea8b2ecf23f9eef4d534fb02ac48f58baed95c5650b"
 
 [[backend.artifacts]]
 platform = "macos-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-macos-x86_64"
+path = "backend/bin/workspace-picker-macos-x86_64"
 sha256 = "960afe5058059cffb87eecf828890e72a7c1de3898c104cdb13415b1abd71e00"
 
 [[backend.artifacts]]
 platform = "macos-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-macos-aarch64"
+path = "backend/bin/workspace-picker-macos-aarch64"
 sha256 = "f89fbdacc15573d07791998c3fa9f457bf868991a00bdbc7776b8a57125efdd3"
 
 [[backend.artifacts]]
 platform = "windows-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-windows-x86_64.exe"
+path = "backend/bin/workspace-picker-windows-x86_64.exe"
 sha256 = "098eb048c46ec30e1ece5c58d26cd43111b4d8f80b0e952d9d41050efd146875"
 
 [[backend.artifacts]]
 platform = "windows-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/6e3b2d0f3750ad78c2211fc653324ce496840de5/sidecars/workspace-picker-windows-aarch64.exe"
+path = "backend/bin/workspace-picker-windows-aarch64.exe"
 sha256 = "024e899f4d063319e04fd6d174d70a861ddbe2465b90d2f3784db8cb224d44b5"

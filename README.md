@@ -17,15 +17,14 @@ Review and grant the module's **backend** permission in **Settings → Modules**
 on first install, then enable the card from **Edit** on a dashboard if it is not
 already visible. The module is installed with `overview_default = true`.
 
-Prebuilt sidecars are downloaded from the public
-[`orqella/workspace-picker-artifacts`](https://github.com/orqella/workspace-picker-artifacts)
-repository. The module source remains private; the artifact repository contains
-only checksummed binaries and their checksums.
+The native sidecars are bundled in this private repository under
+`backend/bin/` and selected by platform from `module.toml`. Nothing is downloaded
+from a public artifact host.
 
 ## Requirements
 
-- No Python or other language runtime is required. The module downloads a
-  prebuilt native sidecar for the host platform.
+- No Python or other language runtime is required. The module ships prebuilt
+  native sidecars for the host platform.
 - Linux: one of Hyprland, Sway, i3, KDE Plasma, or an EWMH X11 window manager
   with `wmctrl`.
 - macOS: [AeroSpace](https://nikitabobko.github.io/AeroSpace/) (recommended) or

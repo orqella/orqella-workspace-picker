@@ -17,6 +17,16 @@ Review and grant the module's **backend** permission in **Settings → Modules**
 on first install, then enable the card from **Edit** on a dashboard if it is not
 already visible. The module is installed with `overview_default = true`.
 
+## Requirements
+
+- Python 3.10 or newer for the Orqella sidecar.
+- Linux: one of Hyprland, Sway, i3, KDE Plasma, or an EWMH X11 window manager
+  with `wmctrl`.
+- macOS: `yabai` for Spaces.
+- Windows: Orqella started in the logged-in desktop session. The bundled
+  VirtualDesktop helper uses the built-in Windows PowerShell 5.1; no separate
+  PowerShell Gallery installation is needed.
+
 ## How it works
 
 The module has a small Python sidecar. It detects the running desktop and uses

@@ -190,6 +190,20 @@ def _desktop_name() -> str:
     return _safe_text(value.split(":", 1)[0], 80) or _platform_name()
 
 
+def _windows_session_id() -> int | None:
+    if os.name != "nt":
+        return None
+    try:
+        import ctypes
+
+        session = ctypes.c_ulong()
+        if ctypes.windll.kernel32.ProcessIdToSessionId(os.getpid(), ctypes.byref(session)):
+            return int(session.value)
+    except (AttributeError, OSError):
+        pass
+    return None
+
+
 def _unsupported(message: str, hint: str = "") -> dict[str, Any]:
     desktop = _desktop_name()
     return {
@@ -802,6 +816,11 @@ class WindowsBackend(WorkspaceBackend):
     def detect(cls) -> "WindowsBackend | None":
         if os.name != "nt":
             return None
+        # Virtual desktops are scoped to the interactive user session. A
+        # service or SSH process in session 0 cannot see the desktop's
+        # workspaces, even when PSVirtualDesktop is installed.
+        if _windows_session_id() == 0:
+            return None
         command = shutil.which("powershell") or shutil.which("pwsh")
         if not command:
             return None
@@ -810,6 +829,8 @@ class WindowsBackend(WorkspaceBackend):
                 command,
                 "-NoProfile",
                 "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
                 "-Command",
                 "if (Get-Command Get-DesktopCount -ErrorAction SilentlyContinue) { 'yes' }",
             ], timeout=5)
@@ -824,6 +845,8 @@ class WindowsBackend(WorkspaceBackend):
             self.powershell,
             "-NoProfile",
             "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
             "-Command",
             POWERSHELL_SNAPSHOT,
         ], timeout=10)
@@ -839,6 +862,8 @@ class WindowsBackend(WorkspaceBackend):
             self.powershell,
             "-NoProfile",
             "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
             "-Command",
             f"Switch-Desktop -Desktop {value}",
         ], timeout=10)
@@ -861,7 +886,11 @@ def _unsupported_hint() -> str:
     if sys.platform == "darwin":
         return "Install yabai and enable its scripting addition to expose macOS Spaces."
     if os.name == "nt":
-        return "Install the VirtualDesktop PowerShell module (PSVirtualDesktop) to expose Windows virtual desktops."
+        return (
+            "Install the VirtualDesktop PowerShell module (PSVirtualDesktop), "
+            "and run Orqella in the logged-in desktop session. A session-0 "
+            "service or SSH process cannot see Windows virtual desktops."
+        )
     if sys.platform.startswith("linux"):
         return (
             "Supported Linux controllers: Hyprland, Sway, i3, KDE Plasma, "

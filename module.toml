@@ -1,0 +1,23 @@
+schema = 1
+id = "workspace-picker"
+name = "Workspace picker"
+version = "0.1.0"
+api_version = "1"
+description = "See and switch open workspaces on the selected machine."
+overview = "ui/overview.html"
+overview_default = true
+icon = "ui/icon.svg"
+node_scope = "node"
+permissions = ["backend"]
+
+[ui]
+overview_width = 3
+overview_height = 3
+
+[backend]
+kind = "sidecar"
+command = ["python3", "backend/server.py"]
+health_path = "/health"
+ready_timeout_ms = 15000
+python = ">=3.10"
+sandbox = false

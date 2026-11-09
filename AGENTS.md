@@ -1,0 +1,25 @@
+# Workspace picker module
+
+Dashboard-only Orqella module. It has no page entry; the overview card is the
+whole user interface.
+
+- `backend/workspaces.py` owns desktop detection, normalization, and switching.
+- `backend/server.py` is the authenticated sidecar API.
+- `ui/overview.js` renders the card and only sends workspace IDs back.
+- Keep platform command construction in the backend. Never let the browser send
+  command text, flags, or arguments.
+- Match an activation request against the current workspace snapshot before
+  running a command; reject unknown or stale IDs.
+- The sidecar runs unsandboxed because it needs the graphical session. Keep the
+  command set limited to the supported workspace controllers and do not add
+  arbitrary shell execution.
+- Do not make the module write files or collect telemetry. There is no network
+  access requirement.
+- Prefer useful workspace metadata where the desktop exposes it. Do not invent
+  app names or monitor labels when a backend cannot provide them.
+- Add parser tests for every new backend under `tests/`.
+- Load `/assets/theme.css` and `/assets/module.css` before `overview.css`; use
+  core primitives and theme tokens.
+- Keep the card usable on narrow phones and for long workspace names.
+- Run `python3 -m unittest discover -s tests -v` and `orqella module check .`
+  before publishing.

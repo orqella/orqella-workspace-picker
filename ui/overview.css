@@ -1,0 +1,202 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  color: var(--ink);
+  font: 12px/1.4 var(--font-sans);
+}
+
+.workspace-card {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 8px;
+}
+
+.workspace-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.workspace-heading { min-width: 0; }
+.eyebrow {
+  margin: 0 0 1px;
+  color: var(--mint);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+h1 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.workspace-refresh {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  font-size: 14px;
+}
+.workspace-refresh.is-loading { opacity: .5; }
+
+.workspace-list {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 2px;
+}
+.workspace-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+}
+.workspace-item:hover {
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--mint) 4%, var(--panel-2));
+}
+.workspace-item:focus-visible {
+  outline: 2px solid var(--mint);
+  outline-offset: 1px;
+}
+.workspace-item.active {
+  border-color: color-mix(in srgb, var(--mint) 52%, var(--line));
+  background: color-mix(in srgb, var(--mint) 9%, var(--panel-2));
+}
+.workspace-item:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+.workspace-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.workspace-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.workspace-line b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+}
+.workspace-monitor,
+.workspace-current {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 5px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.3;
+}
+.workspace-current {
+  border-color: color-mix(in srgb, var(--mint) 35%, var(--line));
+  color: var(--mint);
+}
+.workspace-apps {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.workspace-app {
+  min-width: 0;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  color: var(--muted);
+  font-size: 9.5px;
+}
+.workspace-app.more { flex: 0 0 auto; }
+.workspace-app.none { background: transparent; padding-inline: 0; }
+.workspace-windows {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 28px;
+  color: var(--muted);
+  font-size: 8.5px;
+  line-height: 1.15;
+}
+.workspace-windows b {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.workspace-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 8px;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+.workspace-empty b {
+  color: var(--ink);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.workspace-empty small {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.workspace-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--line) 65%, transparent);
+  padding-top: 6px;
+  color: var(--muted);
+  font-size: 9.5px;
+}
+.workspace-foot span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-foot .bad { color: var(--red); }

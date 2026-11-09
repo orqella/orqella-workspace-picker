@@ -1,7 +1,7 @@
 schema = 1
 id = "workspace-picker"
 name = "Workspace picker"
-version = "0.1.1"
+version = "0.2.0"
 api_version = "1"
 description = "See and switch open workspaces on the selected machine."
 overview = "ui/overview.html"
@@ -16,8 +16,37 @@ overview_height = 4
 
 [backend]
 kind = "sidecar"
-command = ["python3", "backend/server.py"]
 health_path = "/health"
-ready_timeout_ms = 15000
-python = ">=3.10"
+ready_timeout_ms = 20000
 sandbox = false
+platforms = ["linux", "macos", "windows"]
+
+[[backend.artifacts]]
+platform = "linux-x86_64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-linux-x86_64"
+sha256 = "c3eb443ff835c306adfad4221856e7ddc484b5da5c65426710f84b537a07b237"
+
+[[backend.artifacts]]
+platform = "linux-aarch64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-linux-aarch64"
+sha256 = "13183f9f98056bed847f48ed0ff22dc1d9bc71764aed7790f36412ef61bfdced"
+
+[[backend.artifacts]]
+platform = "macos-x86_64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-macos-x86_64"
+sha256 = "e0fb108152b6e5e6c3a302ed66636c4aa39067c00518adf826298d6b118c952f"
+
+[[backend.artifacts]]
+platform = "macos-aarch64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-macos-aarch64"
+sha256 = "288bbb152a0da39c748520c70b81e7c7baf67387bf8513465555043ef9c64d41"
+
+[[backend.artifacts]]
+platform = "windows-x86_64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-windows-x86_64.exe"
+sha256 = "2b4ed2bb5213ff4f5266829ac74ad59e0256b7522a96ca9a519dacbc0deffff3"
+
+[[backend.artifacts]]
+platform = "windows-aarch64"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/48981c3b84e80e9c382eee7f1869f9627f52e9d8/sidecars/workspace-picker-windows-aarch64.exe"
+sha256 = "8930f035a60ea5d93ae261b38ad032cd34c1356631607133b7fdd509fd4fc15d"

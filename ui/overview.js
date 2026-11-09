@@ -10,7 +10,7 @@
     "'": "&#39;",
   }[character]));
 
-  const REFRESH_MS = 8000;
+  let refreshMs = 8000;
   let context = null;
   let timer = null;
   let loading = false;
@@ -90,9 +90,24 @@
     return (data.workspaces || []).find((workspace) => workspace.active)?.label || "";
   }
 
+  function scheduleRefresh() {
+    if (timer) window.clearTimeout(timer);
+    timer = window.setTimeout(() => {
+      if (!document.hidden) load();
+      scheduleRefresh();
+    }, refreshMs);
+  }
+
   function render(data) {
     const list = $("workspaceList");
     const workspaces = Array.isArray(data?.workspaces) ? data.workspaces : [];
+    if (Number.isFinite(Number(data?.refresh_ms))) {
+      const next = Math.min(60000, Math.max(5000, Number(data.refresh_ms)));
+      if (next !== refreshMs) {
+        refreshMs = next;
+        scheduleRefresh();
+      }
+    }
     $("backendLabel").textContent = data?.desktop || "Workspace backend";
     list.setAttribute("aria-busy", "false");
 
@@ -170,14 +185,12 @@
     $("machineLabel").textContent = name;
     $("refresh").onclick = () => load();
     load();
-    timer = window.setInterval(() => {
-      if (!document.hidden) load();
-    }, REFRESH_MS);
+    scheduleRefresh();
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) load();
     });
     window.addEventListener("pagehide", () => {
-      if (timer) window.clearInterval(timer);
+      if (timer) window.clearTimeout(timer);
     });
   });
 })();

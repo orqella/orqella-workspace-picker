@@ -116,5 +116,6 @@ go build -trimpath -ldflags="-s -w" -o /tmp/workspace-picker .
 
 The sidecar is a single static Go binary. `orqella module check .` validates the
 manifest and artifact entries. Release artifacts are built for Linux, macOS,
-and Windows on x86_64 and aarch64 and published to the public artifact
-repository until this module repository becomes public.
+and Windows on x86_64 and aarch64 and published to the separate artifact
+repository (private during the preview) until this module repository becomes
+public.

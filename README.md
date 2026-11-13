@@ -17,11 +17,11 @@ Review and grant the module's **backend** permission in **Settings → Modules**
 on first install, then enable the card from **Edit** on a dashboard if it is not
 already visible. The module is installed with `overview_default = true`.
 
-Native sidecars are published in the public
-[`orqella/workspace-picker-artifacts`](https://github.com/orqella/workspace-picker-artifacts)
-repository and selected by platform from `module.toml`. The module source stays
-private. See `TODO.md` for moving the artifacts into this repository when it
-becomes public.
+Native sidecars are published in the separate
+`orqella/workspace-picker-artifacts` repository (private during the preview)
+and selected by platform from `module.toml`. The module source also stays
+private during the preview. See `TODO.md` for moving the artifacts into this
+repository when it becomes public.
 
 ## Requirements
 

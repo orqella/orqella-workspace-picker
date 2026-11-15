@@ -1,0 +1,20 @@
+name: ci
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+      - run: go test ./...
+        working-directory: backend
+      - run: go vet ./...
+        working-directory: backend
+      - run: GOOS=windows GOARCH=amd64 go build -o /tmp/workspace-picker.exe .
+        working-directory: backend
+      - run: GOOS=darwin GOARCH=arm64 go build -o /tmp/workspace-picker-darwin .
+        working-directory: backend

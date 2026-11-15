@@ -18,10 +18,13 @@ on first install, then enable the card from **Edit** on a dashboard if it is not
 already visible. The module is installed with `overview_default = true`.
 
 Native sidecars are published in the separate
-`orqella/workspace-picker-artifacts` repository (private during the preview)
-and selected by platform from `module.toml`. The module source also stays
-private during the preview. See `TODO.md` for moving the artifacts into this
-repository when it becomes public.
+`orqella/workspace-picker-artifacts` repository and selected by platform from
+`module.toml`. The artifact repository is public; the module source repository
+is still private while the preview is in progress. Version `0.2.3` publishes the
+rebuilt binaries for all six platforms, and the `module.toml` URLs and SHA-256
+digests point at the `v0.2.3` tag. See `TODO.md` for moving the artifacts into
+this repository when it becomes public. Installed modules execute the published
+artifacts, not this checkout.
 
 ## Requirements
 
@@ -116,6 +119,6 @@ go build -trimpath -ldflags="-s -w" -o /tmp/workspace-picker .
 
 The sidecar is a single static Go binary. `orqella module check .` validates the
 manifest and artifact entries. Release artifacts are built for Linux, macOS,
-and Windows on x86_64 and aarch64 and published to the separate artifact
-repository (private during the preview) until this module repository becomes
-public.
+and Windows on x86_64 and aarch64 and published to the separate public artifact
+repository. Rebuild and republish those six binaries whenever this source
+changes; installed modules execute the published artifacts, not this checkout.

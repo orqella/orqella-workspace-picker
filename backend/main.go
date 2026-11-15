@@ -44,6 +44,10 @@ func (state *serverState) snapshot(response http.ResponseWriter, request *http.R
 	if !state.authorized(response, request) {
 		return
 	}
+	if request.Method != http.MethodGet {
+		writeJSON(response, http.StatusMethodNotAllowed, map[string]any{"ok": false, "error": "method not allowed"})
+		return
+	}
 	writeJSON(response, http.StatusOK, state.manager.snapshot())
 }
 
@@ -105,6 +109,9 @@ func main() {
 		Addr:              "127.0.0.1:" + strconv.Itoa(port),
 		Handler:           mux,
 		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatal(err)

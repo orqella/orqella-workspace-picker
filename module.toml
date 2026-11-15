@@ -1,7 +1,7 @@
 schema = 1
 id = "workspace-picker"
 name = "Workspace picker"
-version = "0.2.2"
+version = "0.2.3"
 api_version = "1"
 description = "See and switch open workspaces on the selected machine."
 overview = "ui/overview.html"
@@ -23,30 +23,30 @@ platforms = ["linux", "macos", "windows"]
 
 [[backend.artifacts]]
 platform = "linux-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-linux-x86_64"
-sha256 = "6a793f5175c24893e8094843c8706074b597a77d35ffa09a01582c3c3d01915d"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-linux-x86_64"
+sha256 = "b08b94c5eec24a40b1a05c1c2953184a62ea33aac5bf1ba96e91a8e7c6f8394a"
 
 [[backend.artifacts]]
 platform = "linux-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-linux-aarch64"
-sha256 = "aa646ee0e7518397ed0e2ea8b2ecf23f9eef4d534fb02ac48f58baed95c5650b"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-linux-aarch64"
+sha256 = "4762c2b10adb1b71a73540d6eae1622058e42c9d86350f08e37254b031dd66db"
 
 [[backend.artifacts]]
 platform = "macos-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-macos-x86_64"
-sha256 = "960afe5058059cffb87eecf828890e72a7c1de3898c104cdb13415b1abd71e00"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-macos-x86_64"
+sha256 = "b05b3367365ce83f8655ef681a5a3209e0ee46eb9052a85b9c96dbf7e00f83e0"
 
 [[backend.artifacts]]
 platform = "macos-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-macos-aarch64"
-sha256 = "f89fbdacc15573d07791998c3fa9f457bf868991a00bdbc7776b8a57125efdd3"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-macos-aarch64"
+sha256 = "95d9f35e7d04136023d30e4ddc357e9ea0010e44ffcde4c98f9e518ab65f0f36"
 
 [[backend.artifacts]]
 platform = "windows-x86_64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-windows-x86_64.exe"
-sha256 = "098eb048c46ec30e1ece5c58d26cd43111b4d8f80b0e952d9d41050efd146875"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-windows-x86_64.exe"
+sha256 = "ec0ca2c4e23cc8cf525a796ed157b25d0d7c2e2770f1b3c7c3da9284e46d3984"
 
 [[backend.artifacts]]
 platform = "windows-aarch64"
-url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.2/sidecars/workspace-picker-windows-aarch64.exe"
-sha256 = "024e899f4d063319e04fd6d174d70a861ddbe2465b90d2f3784db8cb224d44b5"
+url = "https://raw.githubusercontent.com/orqella/workspace-picker-artifacts/v0.2.3/sidecars/workspace-picker-windows-aarch64.exe"
+sha256 = "a5cbf1b30cb538ac25cfecbd8a9e7c2e04700f954ac8325a9194168dfb9a657c"

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"testing"
@@ -122,6 +124,10 @@ func TestBuildKDEAndYabai(t *testing.T) {
 	if len(kde.Workspaces) != 4 || kde.Workspaces[1].Label != "Desktop 2" || !kde.Workspaces[1].Active {
 		t.Fatalf("unexpected KDE payload: %+v", kde)
 	}
+	zeroBased := buildKDE(3, 0)
+	if zeroBased.Workspaces[0].ID != "0" || !zeroBased.Workspaces[0].Active {
+		t.Fatalf("unexpected zero-based KDE payload: %+v", zeroBased)
+	}
 	yabai := buildYabai(
 		[]yabaiSpace{{Index: 1, Label: "Term", Display: 1, HasFocus: true}, {Index: 2, Display: 1}},
 		[]yabaiWindow{{Space: 1, App: "WezTerm", Title: "shell"}, {Space: 2, App: "Safari", Title: "Docs"}},
@@ -152,6 +158,44 @@ func TestSafeTextPreservesValidUTF8(t *testing.T) {
 	}
 	if truncated != "🚀🔥" {
 		t.Fatalf("unexpected truncated value: %q", truncated)
+	}
+}
+
+func TestSafeTextRepairsInvalidUTF8(t *testing.T) {
+	value := safeText(string([]byte{0xff, 'a', 'b'}), 10)
+	if !utf8.ValidString(value) {
+		t.Fatalf("safeText produced invalid UTF-8: %q", value)
+	}
+}
+
+func TestFilterEnvRemovesModuleCredentials(t *testing.T) {
+	clean := filterEnv([]string{
+		"ORQELLA_MODULE_TOKEN=secret",
+		"ORQELLA_MODULE_CONFIG={}",
+		"KEEP=yes",
+	})
+	if len(clean) != 1 || clean[0] != "KEEP=yes" {
+		t.Fatalf("unexpected env: %+v", clean)
+	}
+}
+
+func TestServerRejectsMissingTokenAndPostSnapshot(t *testing.T) {
+	state := &serverState{token: "expected"}
+	recorder := httptest.NewRecorder()
+	request := httptest.NewRequest(http.MethodGet, "/api/workspaces", nil)
+	if state.authorized(recorder, request) {
+		t.Fatal("missing token was accepted")
+	}
+	if recorder.Code != http.StatusUnauthorized {
+		t.Fatalf("unexpected status: %d", recorder.Code)
+	}
+
+	recorder = httptest.NewRecorder()
+	request = httptest.NewRequest(http.MethodPost, "/api/workspaces", nil)
+	request.Header.Set("X-Orqella-Module-Token", "expected")
+	state.snapshot(recorder, request)
+	if recorder.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("unexpected status: %d", recorder.Code)
 	}
 }
 

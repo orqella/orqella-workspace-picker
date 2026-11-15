@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 	"unicode"
-	"unicode/utf8"
 )
 
 type App struct {
@@ -80,19 +79,24 @@ func bucketFor(groups map[string]*appBucket, key string) *appBucket {
 	return group
 }
 
+func hostHome() string {
+	if value := strings.TrimSpace(os.Getenv("ORQELLA_HOST_HOME")); value != "" {
+		return value
+	}
+	home, _ := os.UserHomeDir()
+	return home
+}
+
 func safeText(value string, limit int) string {
 	value = strings.ReplaceAll(value, "\x00", "")
 	value = strings.TrimSpace(value)
 	if limit <= 0 {
 		return ""
 	}
-	if len(value) > limit {
-		runes := []rune(value)
-		if len(runes) > limit {
-			value = string(runes[:limit])
-		} else if !utf8.ValidString(value) {
-			value = strings.ToValidUTF8(value, "")
-		}
+	value = strings.ToValidUTF8(value, "")
+	runes := []rune(value)
+	if len(runes) > limit {
+		value = string(runes[:limit])
 	}
 	return value
 }
@@ -279,17 +283,28 @@ func runCommand(name string, args []string, env []string, timeout time.Duration)
 }
 
 func childEnv() []string {
-	env := os.Environ()
+	env := filterEnv(os.Environ())
 	if runtime.GOOS == "darwin" {
 		path := os.Getenv("PATH")
 		prefixes := []string{"/opt/homebrew/bin", "/usr/local/bin"}
-		if home, err := os.UserHomeDir(); err == nil {
+		if home := hostHome(); home != "" {
 			prefixes = append(prefixes, filepath.Join(home, "bin"), filepath.Join(home, ".cargo", "bin"))
 		}
 		parts := append(prefixes, path)
 		env = setEnv(env, "PATH", strings.Join(parts, ":"))
 	}
 	return env
+}
+
+func filterEnv(env []string) []string {
+	clean := make([]string, 0, len(env))
+	for _, item := range env {
+		if strings.HasPrefix(item, "ORQELLA_MODULE_TOKEN=") || strings.HasPrefix(item, "ORQELLA_MODULE_CONFIG=") {
+			continue
+		}
+		clean = append(clean, item)
+	}
+	return clean
 }
 
 func setEnv(env []string, key, value string) []string {
@@ -304,9 +319,9 @@ func setEnv(env []string, key, value string) []string {
 }
 
 func lookPath(name string) string {
-	if value := os.Getenv("PATH"); runtime.GOOS == "darwin" {
+	if runtime.GOOS == "darwin" {
 		candidates := []string{"/opt/homebrew/bin/" + name, "/usr/local/bin/" + name}
-		if home, err := os.UserHomeDir(); err == nil {
+		if home := hostHome(); home != "" {
 			candidates = append(candidates, filepath.Join(home, "bin", name), filepath.Join(home, ".cargo", "bin", name))
 		}
 		for _, candidate := range candidates {
@@ -314,7 +329,6 @@ func lookPath(name string) string {
 				return candidate
 			}
 		}
-		_ = value
 	}
 	if path, err := exec.LookPath(name); err == nil {
 		return path
@@ -351,9 +365,12 @@ func hyprlandEnvs() [][]string {
 	}
 	entries, _ := filepath.Glob(filepath.Join(runtime, "hypr", "*"))
 	sort.Slice(entries, func(i, j int) bool {
-		left, _ := os.Stat(entries[i])
-		right, _ := os.Stat(entries[j])
-		return left != nil && right != nil && left.ModTime().After(right.ModTime())
+		left, leftErr := os.Stat(entries[i])
+		right, rightErr := os.Stat(entries[j])
+		if leftErr != nil || rightErr != nil {
+			return entries[i] < entries[j]
+		}
+		return left.ModTime().After(right.ModTime())
 	})
 	for _, path := range entries {
 		if _, err := os.Stat(filepath.Join(path, ".socket.sock")); err != nil {

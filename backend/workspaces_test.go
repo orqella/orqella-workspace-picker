@@ -4,6 +4,7 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+	"unicode/utf8"
 )
 
 func hyprClientFor(workspace int, class, title string) hyprClient {
@@ -141,5 +142,24 @@ func TestBundledWindowsHelperIsPresent(t *testing.T) {
 func TestSafeTextKeepsZero(t *testing.T) {
 	if safeText("0", 10) != "0" {
 		t.Fatal("zero identifier was lost")
+	}
+}
+
+func TestSafeTextPreservesValidUTF8(t *testing.T) {
+	truncated := safeText("🚀🔥✨", 2)
+	if !utf8.ValidString(truncated) {
+		t.Fatalf("safeText produced invalid UTF-8: %q", truncated)
+	}
+	if truncated != "🚀🔥" {
+		t.Fatalf("unexpected truncated value: %q", truncated)
+	}
+}
+
+func TestI3ActivateRejectsCommandSeparators(t *testing.T) {
+	backend := &i3Backend{binary: "/bin/echo"}
+	for _, name := range []string{"1; exec xterm", "1\nworkspace 2", "1\rworkspace 2"} {
+		if err := backend.activate(Workspace{Name: name}); err == nil {
+			t.Fatalf("expected workspace name %q to be rejected", name)
+		}
 	}
 }

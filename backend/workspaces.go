@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 )
 
 type App struct {
@@ -81,8 +83,16 @@ func bucketFor(groups map[string]*appBucket, key string) *appBucket {
 func safeText(value string, limit int) string {
 	value = strings.ReplaceAll(value, "\x00", "")
 	value = strings.TrimSpace(value)
+	if limit <= 0 {
+		return ""
+	}
 	if len(value) > limit {
-		value = value[:limit]
+		runes := []rune(value)
+		if len(runes) > limit {
+			value = string(runes[:limit])
+		} else if !utf8.ValidString(value) {
+			value = strings.ToValidUTF8(value, "")
+		}
 	}
 	return value
 }
@@ -690,6 +700,11 @@ func (backend *i3Backend) activate(workspace Workspace) error {
 	if workspace.Number != nil && *workspace.Number > 0 {
 		_, err := runCommand(backend.binary, []string{"workspace", "number", strconv.Itoa(*workspace.Number)}, backend.env, 3*time.Second)
 		return err
+	}
+	// i3-msg parses this argument as an i3 command; `;` and newlines are
+	// command separators and must never come from a workspace name.
+	if strings.ContainsAny(workspace.Name, ";\n\r") || strings.IndexFunc(workspace.Name, unicode.IsControl) >= 0 {
+		return fmt.Errorf("workspace name contains unsupported characters")
 	}
 	_, err := runCommand(backend.binary, []string{"workspace", workspace.Name}, backend.env, 3*time.Second)
 	return err

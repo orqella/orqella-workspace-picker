@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"flag"
 	"io"
@@ -18,7 +19,8 @@ type serverState struct {
 }
 
 func (state *serverState) authorized(response http.ResponseWriter, request *http.Request) bool {
-	if state.token != "" && request.Header.Get("X-Orqella-Module-Token") == state.token {
+	supplied := request.Header.Get("X-Orqella-Module-Token")
+	if state.token != "" && subtle.ConstantTimeCompare([]byte(supplied), []byte(state.token)) == 1 {
 		return true
 	}
 	writeJSON(response, http.StatusUnauthorized, map[string]any{"ok": false, "error": "unauthorized"})

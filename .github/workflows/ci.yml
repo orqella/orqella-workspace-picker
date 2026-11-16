@@ -1,5 +1,12 @@
 name: ci
-on: [push, pull_request]
+
+# Automatic CI is paused to conserve GitHub Actions minutes. Run it from the
+# Actions tab (or `gh workflow run ci`) when a manual check is wanted.
+# Restore automatic runs by replacing the trigger below with:
+#   on: [push, pull_request]
+on:
+  workflow_dispatch:
+
 permissions:
   contents: read
 jobs:

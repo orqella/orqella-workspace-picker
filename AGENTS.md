@@ -22,11 +22,9 @@ whole user interface.
 - `backend/vendor/psvirtualdesktop/` is an unmodified MIT-licensed vendored
   dependency. Keep its license and files together; do not edit the vendored
   script.
-- Release binaries are published to the public
-  `orqella/workspace-picker-artifacts` repository and selected by platform from
-  `module.toml` using artifact `url` entries. Keep the checksums in sync.
-- Once this module repository is public, move the artifacts into this
-  repository’s releases and update `module.toml`; see `TODO.md`.
+- Release binaries are attached to the matching GitHub release in this
+  repository and selected by platform from `module.toml` using artifact `url`
+  entries. Keep the checksums in sync.
 - Add parser tests for every new backend under `backend/workspaces_test.go`.
 - Load `/assets/theme.css` and `/assets/module.css` before `overview.css`; use
   core primitives and theme tokens.

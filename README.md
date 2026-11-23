@@ -1,5 +1,7 @@
 # Workspace picker
 
+![Workspace picker card showing four workspaces, the current workspace, and app chips](docs/screenshot.png)
+
 A dashboard-only Orqella module for seeing and switching the open workspaces on
 the selected machine. It has no page tab; it appears as an overview card.
 

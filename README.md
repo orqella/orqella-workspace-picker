@@ -1,4 +1,18 @@
-# Workspace picker
+<p align="center">
+  <a href="https://orqella.io">
+    <img src="logo.png" alt="Orqella" width="96">
+  </a>
+</p>
+
+<h1 align="center">Workspace picker</h1>
+
+<p align="center">
+  <a href="https://orqella.io">Website</a> ·
+  <a href="https://github.com/orqella/orqella#install">Quick start</a> ·
+  <a href="https://github.com/orqella/orqella#modules">Modules</a> ·
+  <a href="https://github.com/orqella/orqella#desktop-client">Desktop client</a> ·
+  <a href="https://orqella.io/docs/">Documentation</a>
+</p>
 
 ![Workspace picker card showing four workspaces, the current workspace, and app chips](docs/screenshot.png)
 
